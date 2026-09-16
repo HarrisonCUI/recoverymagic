@@ -34,7 +34,9 @@ import {
 import LegScene from "./LegScene";
 import RecoveryTutorial from "./RecoveryTutorial";
 import RecoveryLibrary from "./RecoveryLibrary";
-import GuidedRecovery from "./GuidedRecovery";
+import GuidedRecovery, { RoutineSteps } from "./GuidedRecovery";
+import RoutineTutorial from "./RoutineTutorial";
+import { routineState, advanceRoutine, routineRecord } from "./recoveryRoutine";
 import NoteShare from "./NoteShare";
 import CareRest from "./CareRest";
 import { actionFor, actionsFor, recoveryRegions, guidedActionFor, configureGuidedRecovery, sessionDuration, durationLabel, relaxationPhase, tutorialHash } from "./recoveryCatalog";
@@ -87,7 +89,7 @@ const labels = {
   detail: "记录详情",
   about: "关于 Magic",
 };
-const stages = ["选部位", "说感受", "选动作"];
+const stages = ["选部位", "说感受", "跟着放松"];
 const stageOf = {
   activity: 0,
   location: 0,
@@ -174,10 +176,12 @@ export function App() {
   const [lessonRegion, setLessonRegion] = useState("quads");
   const [libraryRegion, setLibraryRegion] = useState(null);
   const [lessonAction, setLessonAction] = useState(null);
+  const [lessonStartRequest, setLessonStartRequest] = useState(0);
   const [lessonDuration, setLessonDuration] = useState(60000);
   const recoveryDuration = sessionDuration(draft?.duration);
-  const recoveryPhase = relaxationPhase(recoveryDuration, draft?.remaining ?? recoveryDuration);
-  const recoveryAction = guidedActionFor(draft);
+  const routine = routineState(draft?.selected || "quads", recoveryDuration, draft?.remaining ?? recoveryDuration);
+  const recoveryPhase = routine.phase;
+  const recoveryAction = routine.action;
   const recoveryMethod = recoveryAction.method;
   const frequent = frequentRegions(preferences);
   const scrollRef = useRef(),
@@ -213,6 +217,7 @@ export function App() {
       route.lessonRegion || route.libraryRegion ? window.location.hash : "#/" + route.magicPage,
     );
     const pop = (e) => {
+      setLessonStartRequest(0);
       setPlaying(false);
       setSheet(null);
       const route = e.state?.magicPage
@@ -290,11 +295,8 @@ export function App() {
       const now = performance.now(),
         elapsed = now - last;
       last = now;
-      setDraft((d) => ({
-        ...d,
-        remaining: Math.max(0, d.remaining - elapsed),
-        practiceMs: (d.practiceMs ?? (sessionDuration(d.duration) - d.remaining)) + Math.min(elapsed, d.remaining, Math.max(0, 30000 - (sessionDuration(d.duration) - d.remaining))),
-      }));
+      if (document.hidden) { setPlaying(false); return; }
+      setDraft(d => advanceRoutine(d, elapsed));
     }, 100);
     return () => clearInterval(id);
   }, [playing, page, recoveryStep]);
@@ -358,6 +360,7 @@ export function App() {
       );
   }
   function openLibrary(selected, duration = lessonDuration) {
+    setLessonStartRequest(0);
     const chosenDuration = sessionDuration(duration);
     setPlaying(false); setSheet(null); setLibraryRegion(selected); setLessonDuration(chosenDuration); setPage("library");
     window.history.pushState({ magicPage: "library", libraryRegion: selected, lessonDuration: chosenDuration }, "", "#/library/" + selected);
@@ -370,13 +373,17 @@ export function App() {
     else go("library");
   }
   function configureLesson(action, duration) {
+    if(action === "routine" && lessonAction !== "routine") setLessonStartRequest(n=>n+1);
     setLessonAction(action); setLessonDuration(duration);
     window.history.replaceState({ magicPage: "tutorial", lessonRegion, lessonAction: action, lessonDuration: duration }, "", tutorialHash(lessonRegion, action, duration));
   }
-  function openTutorial(selected, action = null) {
-    const chosen = actionFor(selected, action).id;
+  function openTutorial(selected, action = null, requestedDuration = lessonDuration) {
+    const nextDuration = sessionDuration(requestedDuration);
+    setLessonDuration(nextDuration);
+    setLessonStartRequest(action === "routine" ? n=>n+1 : 0);
+    const chosen = !action || action === "routine" ? "routine" : actionFor(selected, action).id;
     setPlaying(false); setSheet(null); setLessonRegion(selected); setLessonAction(chosen); setPage("tutorial");
-    window.history.pushState({ magicPage: "tutorial", lessonRegion: selected, lessonAction: chosen, lessonDuration }, "", tutorialHash(selected, chosen, lessonDuration));
+    window.history.pushState({ magicPage: "tutorial", lessonRegion: selected, lessonAction: chosen, lessonDuration: nextDuration }, "", tutorialHash(selected, chosen, nextDuration));
   }
   function choose(id, side = draft.side) {
     if (id === draft.selected && side === draft.side) return;
@@ -397,6 +404,9 @@ export function App() {
       remaining: 60000,
       duration: 60000,
       practiceMs: 0,
+      routineVersion: 2,
+      routineLog: {},
+      routineHistory: [],
       recoveryMethod: "massage",
       recoveryAction: actionFor(id).id,
     });
@@ -404,7 +414,7 @@ export function App() {
   }
   function configureRecovery(options) {
     setPlaying(false);
-    setDraft(d => configureGuidedRecovery(d, options));
+    setDraft(d => ({ ...configureGuidedRecovery(d, options), routineVersion: 2, routineLog: {}, routineHistory: [...(d.routineHistory || []), ...routineRecord(d).filter(s => s.seconds > 0)] }));
     setAnimationKey(k => k + 1);
     setSheet(null);
   }
@@ -441,10 +451,17 @@ export function App() {
     go("complete", { replace: true });
     if (!durable) setToast("本机存储不可用，记录暂留在当前页面。请导出保存。");
   }
+  function saveRoutine(session, side) {
+    const item = { ...makeRecord({ ...initialDraft({ selected: session.selected, side, sport: preferences.last?.sport }), ...session, side, screen: "recovery", routineVersion: 2 }, { stopOnly: true }), sport: "未记录", result: "自主放松 · 未进行本次自查" };
+    const next = upsertRecord(records, item);
+    setRecords(next); setRecord(item);
+    try { localStorage.setItem(STORE, JSON.stringify(next)); } catch { setToast("记录暂留在当前页面，请导出保存。"); }
+    go("complete", {replace:true});
+  }
   function retryFrom(r) {
     const selected =
       r.selected || muscles.find((m) => m.name === r.region)?.id || "quads";
-    start({ sport: r.sport, selected, side: r.side, referenceId: r.id });
+    start({ sport: sports.some(([name]) => name === r.sport) ? r.sport : undefined, selected, side: r.side, referenceId: r.id });
   }
   function exportRecords() {
     const url = URL.createObjectURL(
@@ -497,7 +514,7 @@ export function App() {
         next,
       );
     if (["touch", "feeling"].includes(page))
-      footer = primary(draft.symptom && draft.onset && !result.allow ? "记录感受，查看下一步" : "选动作，开始放松", next, !draft.symptom || !draft.onset);
+      footer = primary(draft.symptom && draft.onset && !result.allow ? "记录感受，查看下一步" : "选时长，开始跟练", next, !draft.symptom || !draft.onset);
     if (page === "care")
       footer = (
         <>
@@ -562,7 +579,7 @@ export function App() {
             {[
               "找到不适的位置",
               "听懂身体的感受",
-              "选好动作与时长，跟着放松",
+              "选好时长，自动跟着放松",
             ].map((v, i) => (
               <div key={v}>
                 <span>0{i + 1}</span>
@@ -874,7 +891,7 @@ export function App() {
               region={m} side={draft.side} action={recoveryAction}
               duration={recoveryDuration} remaining={draft.remaining}
               playing={playing} animationKey={animationKey}
-              onChooseAction={() => setSheet("recovery-actions")}
+              onChooseAction={() => setSheet("recovery-plan")}
               onDuration={duration => configureRecovery({ duration })}
               onDetails={() => setSheet("lesson")}
             />
@@ -951,7 +968,7 @@ export function App() {
               <div className="history-summary">
                 <span>{records.length} 份身体笔记</span>
                 {records.length > 0 && (
-                  <div className="journal-export-actions"><button onClick={() => setSheet("share-history")}>分享长图</button><button onClick={exportRecords}><Download size={16} />导出文件</button></div>
+                  <div className="journal-export-actions"><button onClick={() => setSheet("share-history")}>分享长图</button>{!__MINITOOL_BUILD__ && <button onClick={exportRecords}><Download size={16} />导出文件</button>}</div>
                 )}
               </div>
               {records.length ? (
@@ -1023,6 +1040,7 @@ export function App() {
                   ...(record.recoveryActionName ? [["本次动作", record.recoveryActionName], ["计划时长", durationLabel((record.plannedSeconds || 60) * 1000)]] : []),
                   ["实际活动", `${record.seconds || 0} 秒`],
                   ...(record.careRestSeconds > 0 ? [["支撑休息", `${record.careRestSeconds} 秒（单独计时）`]] : []),
+                  ...(record.routineSteps || []).map((step, i) => [`动作 ${i + 1} · ${step.name}`, `跟练计时 ${step.seconds} 秒`]),
                 ].map(([key, value]) => (
                   <div key={key}>
                     <span>{key}</span>
@@ -1075,7 +1093,8 @@ export function App() {
               </button>
             </section>
           )}
-          {page === "tutorial" && (
+          {page === "tutorial" && lessonAction === "routine" && !lessonCare && <RoutineTutorial startRequest={lessonStartRequest} key={lessonRegion} selected={lessonRegion} initialDuration={lessonDuration} initialSide={preferences.last?.side || "right"} onConfig={configureLesson} suspended={!!sheet} onSave={saveRoutine} />}
+          {page === "tutorial" && (lessonAction !== "routine" || lessonCare) && (
             <RecoveryTutorial
               key={lessonRegion + (lessonCare?.draftId || "")}
               selected={lessonRegion}
@@ -1130,7 +1149,7 @@ export function App() {
       {sheet && (
         <Sheet
           title={
-            ["share-note", "share-history"].includes(sheet) ? "分享身体笔记" : sheet === "recovery-actions" ? `${m.name} · 选择恢复动作` : sheet === "feedback"
+            ["share-note", "share-history"].includes(sheet) ? "分享身体笔记" : sheet === "recovery-plan" ? "自动跟练顺序" : sheet === "recovery-actions" ? `${m.name} · 选择恢复动作` : sheet === "feedback"
               ? "现在感觉如何？"
               : sheet === "sport"
                 ? "这次做了什么运动？"
@@ -1156,7 +1175,7 @@ export function App() {
           }
           onClose={() => setSheet(null)}
         >
-          {["share-note", "share-history"].includes(sheet) ? <NoteShare records={sheet === "share-note" ? [record] : records} initialId={sheet === "share-note" ? record?.id : undefined} /> : sheet === "recovery-actions" ? (
+          {["share-note", "share-history"].includes(sheet) ? <NoteShare records={sheet === "share-note" ? [record] : records} initialId={sheet === "share-note" ? record?.id : undefined} /> : sheet === "recovery-plan" ? <RoutineSteps region={m.id} duration={recoveryDuration} remaining={draft.remaining}/> : sheet === "recovery-actions" ? (
             <div className="recovery-actions guided-action-list" role="group" aria-label="该部位的恢复动作">
               {actionsFor(m.id).map(action => <button key={action.id} aria-pressed={recoveryAction.id === action.id} onClick={() => configureRecovery({ actionId: action.id })}><div className={"action-symbol " + action.method}>{action.method === "massage" ? <HandPalm size={23} /> : <Pulse size={23} />}</div><span><strong>{action.name}</strong><small>{action.summary}</small></span>{recoveryAction.id === action.id ? <Check size={18} /> : <ArrowUpRight size={18} />}</button>)}
             </div>
@@ -1225,7 +1244,7 @@ export function App() {
             </>
           ) : sheet === "lesson" && recoveryMethod === "massage" ? (
             <div className="about-content">
-              <p className="guided-plan-note">已选 {recoveryAction.name} · {durationLabel(recoveryDuration)}。先试 1–3 次；较长计划在前 30 秒后进入松手休息，不必持续按揉或做满。</p>
+              <p className="guided-plan-note">当前 {recoveryAction.name} · 总时长 {durationLabel(recoveryDuration)}。每段先试 1 次，舒适再继续；步骤结束会自动松手、切换。计时是课程安排，不是治疗剂量。</p>
               <h3>先放松腿部</h3>
               <p>{MASSAGES[m.id].setup}</p>
               <h3>跟着手法做</h3>

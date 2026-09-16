@@ -214,6 +214,26 @@ button svg {
   display: flex;
   gap: 5px;
 }
+
+/*
+ * Xiaohongshu overlays its native profile/share controls on the right side of
+ * the navigation row. Safe-area-inset-top only covers the status bar, not
+ * those controls, so the mini-tool build must reserve their horizontal zone.
+ */
+html.minitool .app-topbar {
+  padding-right: 148px;
+}
+html.minitool .app-topbar .page-title {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+html.minitool .top-actions {
+  display: none;
+}
 .top-actions button,
 .back-button {
   display: grid;
@@ -356,7 +376,8 @@ button svg {
   color: var(--orange);
 }
 .flow-footer {
-  padding: 14px 23px max(16px, env(safe-area-inset-bottom));
+  padding: 14px 23px 16px;
+  padding-bottom: calc(16px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
   border-top: 1px solid #29292c;
   background: #171718;
   flex-shrink: 0;
@@ -374,7 +395,8 @@ button svg {
   border-top: 1px solid #2b2b2f;
   background: #161617;
   flex-shrink: 0;
-  padding: 9px 20px max(11px, env(safe-area-inset-bottom));
+  padding: 9px 20px 11px;
+  padding-bottom: calc(11px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
   height: 70px;
 }
 .tab-bar button {
@@ -1647,12 +1669,23 @@ input[type="range"] {
     box-shadow: none;
   }
   .app-topbar {
-    padding-top: max(10px, env(safe-area-inset-top));
-    height: calc(57px + env(safe-area-inset-top));
+    /* Chrome 61 baseline: keep the product controls below the container chrome. */
+    padding-top: 10px;
+    height: 57px;
+    /*
+     * The Xiaohongshu simulator injects --safe-area-inset-top, while a real
+     * device exposes env(safe-area-inset-top). The old max(env(...)) rule was
+     * ignored by the simulator/Chrome 61, so our left and right controls sat
+     * underneath Xiaohongshu's own navigation buttons.
+     */
+    padding-top: calc(10px + var(--safe-area-inset-top, env(safe-area-inset-top, 0px)));
+    height: calc(57px + var(--safe-area-inset-top, env(safe-area-inset-top, 0px)));
   }
   .tab-bar {
-    height: calc(66px + env(safe-area-inset-bottom));
-    padding-bottom: calc(9px + env(safe-area-inset-bottom));
+    height: 66px;
+    padding-bottom: 9px;
+    height: calc(66px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
+    padding-bottom: calc(9px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
   }
   .screen-body {
     padding: 21px 23px 24px;
@@ -1696,7 +1729,8 @@ input[type="range"] {
     max-width: 500px;
     width: 100%;
     border-radius: 22px 22px 0 0;
-    padding-bottom: max(24px, env(safe-area-inset-bottom));
+    padding-bottom: 24px;
+    padding-bottom: calc(24px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
   }
 }
 @media (max-width: 355px) {
@@ -3187,3 +3221,55 @@ h1[tabindex="-1"]:focus { outline: none; }
 .quick-massage-button:hover { border-color: #ffc095; background: #463125; }
 .quick-massage-button:focus-visible { outline: 2px solid #ffc095; outline-offset: 3px; }
 @media (max-width: 350px) { .quick-massage-button { gap: 6px; padding-inline: 9px; } .quick-massage-button > svg:last-child { display: none; } }
+/* Automatic, region-specific routines share the main-flow viewer and timing. */
+.routine-next { display: flex; justify-content: space-between; gap: 12px; margin-top: 9px; font-size: 10px; color: #a9bec8; }
+.routine-next > span:first-child { color: #f4b88b; white-space: nowrap; }
+.routine-tutorial .massage-scene, .routine-tutorial .movement-scene { height: clamp(190px, calc(100dvh - 540px), 280px); }
+.routine-tutorial .guided-heading h1, .guided-heading h1 { font-size: 22px; }
+.routine-tutorial .guided-options { padding-bottom: 10px; }
+.routine-tutorial .guided-instructions .guided-benefit { margin: 0 0 5px; }
+.session-rest-card > span { max-width: 300px; line-height: 1.7; padding: 0 14px; }
+.session-rest-card > b { margin-top: 10px; font: 24px ui-monospace, monospace; color: #ffc49d; }
+.routine-controls { padding: 12px 22px 5px; border-top: 1px solid #2d3b43; background: #182127; }
+.routine-controls > div { display: flex; align-items: center; gap: 20px; }
+.routine-controls .primary { flex: 1; margin: 0; font-size: 13px; }
+.routine-controls .text-button { min-height: 29px; font-size: 11px; margin-top: 5px; }
+.routine-details { padding: 16px 22px; }
+.routine-details p { margin: 12px 0; font-size: 12px; line-height: 1.8; color: #b4c5cd; }
+.routine-steps { list-style: none; padding: 0; margin: 15px 0; }
+.routine-steps li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #39434a; font-size: 12px; }
+.routine-steps li > span { color: #ffa36c; font: 14px ui-monospace, monospace; }
+.routine-steps li > div { flex: 1; }
+.routine-steps small { display: block; margin-top: 4px; color: #91a6b2; font-size: 10px; }
+.routine-steps li > b { color: #c8d7de; white-space: nowrap; font-size: 11px; }
+.routine-steps li[aria-current] strong { color: #ffc295; }
+.single-action-library { margin-top: 22px; }
+.single-action-library summary { color: #aec0c8; font-size: 12px; cursor: pointer; padding-block: 9px; }
+.routine-link { font-size: 11px; color: #ffc198; padding: 8px 0; }
+.gesture-review { display: flex; align-items: center; gap: 18px; margin: 12px 22px; padding: 20px 16px; border-radius: 14px; background: #1b2a32; border: 1px solid #46545b; }
+.gesture-review .contact-key { width: 70px; height: 90px; flex-shrink: 0; }
+.gesture-review strong { font-size: 13px; color: #edc2a4; }
+.gesture-review p, .gesture-review small { font-size: 11px; line-height: 1.7; color: #b3c3cb; margin-top: 9px; display: block; }
+@media (max-height: 780px) { .routine-tutorial .massage-scene, .routine-tutorial .movement-scene { height: 190px; } .routine-controls { padding-block: 8px 3px; } }
+.routine-secondary { display: flex !important; justify-content: space-between; gap: 12px; }
+.routine-secondary .text-button { margin-block: 4px 0; padding-block: 4px; }
+
+/* Course status belongs below the picture, never over the demonstration. */
+.guided-instructions > .session-rest-card {
+  position: static; inset: auto; display: grid; grid-template-columns: 1fr auto;
+  align-items: center; gap: 4px 12px; padding: 9px 12px; margin-bottom: 9px;
+  border: 1px solid #334149; border-radius: 10px; background: #1b252a;
+  pointer-events: auto; text-align: left;
+}
+.guided-instructions > .session-rest-card strong { font-size: 13px; }
+.guided-instructions > .session-rest-card > span { grid-column: 1 / -1; max-width: none; padding: 0; font-size: 11px; line-height: 1.5; }
+.guided-instructions > .session-rest-card > b { margin: 0; font-size: 16px; }
+.guided-recovery .touch-animation-caption,
+.guided-recovery .massage-demo-tag,
+.guided-recovery .motion-phase,
+.guided-recovery .movement-tag { display: none; }
+
+/* Fade only while hands are released; retain the scene across course stages. */
+.routine-viewer { background: #101518; }
+.routine-scene-fade { transition: opacity 100ms linear; }
+@media (prefers-reduced-motion: reduce) { .routine-scene-fade { transition: none; } }

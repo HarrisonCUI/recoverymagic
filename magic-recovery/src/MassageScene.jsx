@@ -10,6 +10,7 @@ export default function MassageScene({
   technique = "light",
   elapsed = 0,
   autoDemo = true,
+  controlled = false,
 }) {
   const [view, setView] = useState(muscles.find((m) => m.id === selected).view);
   const [demo, setDemo] = useState(
@@ -21,7 +22,7 @@ export default function MassageScene({
   useEffect(() => {
     if (playing) setDemo(false);
   }, [playing]);
-  if (technique === "pin") return <div className="supine-massage-scene"><MovementScene selected={selected} side={side} playing={playing} animationKey={animationKey} elapsed={elapsed} autoDemo={autoDemo} massagePose /></div>;
+  if (technique === "pin") return <div className="supine-massage-scene"><MovementScene selected={selected} side={side} playing={playing} animationKey={animationKey} elapsed={elapsed} autoDemo={autoDemo} controlled={controlled} massagePose /></div>;
   return (
     <div className="massage-scene scene-slot">
       <LegScene
@@ -36,10 +37,11 @@ export default function MassageScene({
         animationKey={animationKey}
         playback={playing || demo}
         onPlaybackToggle={() => setDemo((v) => !v)}
-        hidePlaybackControl={playing}
+        hidePlaybackControl={playing || controlled}
+        elapsedMs={controlled ? elapsed : undefined}
       />
       <div className="massage-demo-tag">
-        {playing ? "跟练中 · 手法示意" : selected === "hamstrings" ? "仰卧屈膝 · 肌腹近景" : "坐稳放松腿部 · 肌腹近景"}
+        {["knead", "thumb"].includes(technique) ? "手法示意 · 青色点为接触范围" : playing ? "跟练中 · 手法示意" : selected === "hamstrings" ? "坐姿支撑 · 肌腹近景" : "坐稳放松腿部 · 肌腹近景"}
       </div>
     </div>
   );

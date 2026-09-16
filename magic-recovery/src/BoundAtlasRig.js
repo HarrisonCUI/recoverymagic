@@ -3,9 +3,16 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {clone} from 'three/addons/utils/SkeletonUtils.js';
 import {RIG_VERSION} from './rigVersion.js';
 import {MOTIONS} from './motions.js';
+import {loadBufferAsset} from './assetLoader.js';
 let asset;
 function load(){
-  if(!asset)asset=new GLTFLoader().loadAsync(`/models/rigged/atlas-recovery.glb?v=${RIG_VERSION}`).catch(e=>{asset=null;throw e;});
+  if(!asset) {
+    if (__MINITOOL_BUILD__) {
+      asset=loadBufferAsset('rigBuffer','/models/rigged/atlas-recovery.glb').then(bytes=>new GLTFLoader().parseAsync(bytes,'')).catch(e=>{asset=null;throw e;});
+    } else {
+      asset=new GLTFLoader().loadAsync(`/models/rigged/atlas-recovery.glb?v=${RIG_VERSION}`).catch(e=>{asset=null;throw e;});
+    }
+  }
   return asset;
 }
 // The full-body viewer plays exported skeletal animations. It never modifies

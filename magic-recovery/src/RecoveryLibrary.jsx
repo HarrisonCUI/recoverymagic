@@ -20,18 +20,22 @@ function RegionGlyph({ region }) {
 }
 export default function RecoveryLibrary({ selected, duration, onDuration, onRegion, onAction }) {
   const region = recoveryRegions.find(r => r.id === selected);
+  const mainDuration = duration === 30000 ? 60000 : duration;
   if (region) return <section className="screen-body action-library">
     <div className="eyebrow">{region.en}</div>
     <h1>{region.name}，这样放松。</h1>
-    <p className="subtitle">选一个动作，直接看示范。</p>
-    <div className="library-duration"><span>想放松多久？</span><DurationPicker value={duration} onChange={onDuration} /></div>
-    <div className="recovery-actions">
+    <p className="subtitle">单侧、单个部位；选好时长就开始。</p>
+    <div className="library-duration"><span>想放松多久？</span><DurationPicker value={mainDuration} onChange={onDuration} /></div>
+    <button className="primary" onClick={() => onAction(region.id, 'routine', mainDuration)}><span>开始自动跟练</span><ArrowUpRight size={18}/></button>
+    <p className="library-hint">1 分钟专注一种手法；3／5 分钟分段衔接，随时可停。</p>
+    <button className="routine-link" onClick={() => onAction(region.id, "routine", 30000)}>先体验 30 秒 →</button>
+    <details className="single-action-library"><summary>单独学习某个动作</summary><div className="recovery-actions">
       {actionsFor(region.id).map((action, i) => <button key={action.id} onClick={() => onAction(region.id, action.id)}>
         <div className={'action-symbol ' + action.method}>{action.method === 'massage' ? <HandPalm size={23} weight="light" /> : <Pulse size={23} weight="light" />}</div>
         <span><strong>{action.name}</strong><small>{action.summary}</small></span><ArrowUpRight size={18} />
       </button>)}
     </div>
-    <p className="library-hint">时长包含试做与休息，不必持续按揉。</p>
+    </details>
     {region.id === 'outerthigh' && <p className="region-boundary">髂胫束是筋膜带。手法演示放在前外侧肌腹，不沿硬带深压。</p>}
   </section>;
   return <section className="screen-body region-library">

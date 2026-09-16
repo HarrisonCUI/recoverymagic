@@ -22,7 +22,7 @@ export function actionsFor(region) {
   return [
     ...MASSAGES[region].techniques.map(technique => ({
       id: technique, method: 'massage', technique,
-      name: TECHNIQUES[technique].name, summary: descriptions[technique],
+      name: TECHNIQUES[technique].name, summary: technique === "pin" ? "轻贴支撑下的关节活动，非揉捏" : descriptions[technique],
       benefit: benefits[technique],
     })),
     { id: 'movement', method: 'movement', name: MOTIONS[region].name, summary: MOTIONS[region].support, benefit: MOTIONS[region].benefit },
@@ -32,15 +32,16 @@ export function actionFor(region, id) {
   const actions = actionsFor(region);
   return actions.find(a => a.id === id) || actions[0];
 }
-export const SESSION_DURATIONS = [30000, 60000, 300000];
+export const SESSION_DURATIONS = [30000, 60000, 180000, 300000];
+export const MAIN_SESSION_DURATIONS = [60000, 180000, 300000];
 export const sessionDuration = value => SESSION_DURATIONS.includes(Number(value)) ? Number(value) : 60000;
-export const durationLabel = value => ({30000:'30 秒',60000:'1 分钟',300000:'5 分钟'})[sessionDuration(value)];
+export const durationLabel = value => ({30000:'30 秒',60000:'1 分钟',180000:'3 分钟',300000:'5 分钟'})[sessionDuration(value)];
 export function relaxationPhase(duration, remaining) {
   const elapsed = Math.max(0, duration - remaining);
   return remaining <= 0 ? 'complete' : elapsed >= 30000 ? 'rest' : 'practice';
 }
 export function tutorialHash(region, action, duration) {
-  return `#/tutorial/${region}?action=${actionFor(region, action).id}&duration=${sessionDuration(duration) / 1000}`;
+  return `#/tutorial/${region}?action=${action === "routine" ? "routine" : actionFor(region, action).id}&duration=${sessionDuration(duration) / 1000}`;
 }
 
 // Resolve persisted guided choices against the same action list used by the library.

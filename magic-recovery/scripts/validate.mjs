@@ -601,7 +601,7 @@ assert.equal(recoveryRegions.length, 7);
 assert.equal(recoveryRegions.reduce((n, r) => n + actionsFor(r.id).length, 0), 24);
 for (const region of recoveryRegions) {
   for (const action of actionsFor(region.id)) {
-    for (const duration of [30000,60000,300000]) {
+    for (const duration of [30000,60000,180000,300000]) {
       const route = publicRoute(tutorialHash(region.id, action.id, duration));
       assert.equal(route.lessonRegion, region.id);
       assert.equal(route.lessonAction, action.id);
@@ -624,7 +624,7 @@ assert.equal(relaxationPhase(300000, 270000), 'rest');
 assert.equal(relaxationPhase(60000, 0), 'complete');
 assert.equal(validateDraft({ ...answered, duration: 30000, remaining: 60000 }), null);
 assert.equal(tutorialCareContext({ ...careCases[0], screen:'care', selected:'outerthigh' }, 'outerthigh').draftId, answered.id);
-console.log('PASS: 24 action routes × 3 durations, new regions, countdown phases, care context and independent activity accounting');
+console.log('PASS: 24 action routes × 4 durations, new regions, countdown phases, care context and independent activity accounting');
 
 // New lateral guides must hit real soft-tissue surfaces on both sides, with no fallback anchor in empty space.
 for (const id of ['outerthigh', 'outercalf']) {
@@ -667,7 +667,7 @@ for (const region of recoveryRegions) {
     assert.equal(guidedActionFor(restored).id, action.id);
     assert.equal(restored.duration, 300000);
     assert.equal(appRoute('#/recovery', restored).magicPage, 'recovery');
-    assert.equal(makeRecord(restored).recoveryActionName, action.name);
+    assert.equal(makeRecord(restored).recoveryActionName, "自动跟练");
     assert.equal(makeRecord(restored).plannedSeconds, 300);
     assert.equal(makeRecord(restored).seconds, 13);
     const shorter = configureGuidedRecovery(restored, { duration: 30000 });
@@ -712,3 +712,54 @@ assert.ok(!JSON.stringify(noteSections({ region: '小腿', pain: null, after: un
 assert.ok(noteFilename({ region: '小腿/外侧', date: 'invalid' }).endsWith('小腿外侧-记录.png'));
 assert.equal(canEnter('recovery', restingDraft), false, 'rest does not clear suspected injury');
 console.log('PASS: share-note fields, missing/zero scores, care guidance and independent supported-rest time');
+
+
+const { SESSION_DURATIONS } = await import("../src/recoveryCatalog.js");
+// Entire course timing: transitions do not count as practice and timers cannot skip accounting.
+const { recoveryRoutine, routineState, advanceRoutine, routineRecord } = await import('../src/recoveryRoutine.js');
+for (const region of muscles) for (const duration of SESSION_DURATIONS) {
+  const plan = recoveryRoutine(region.id, duration);
+  assert.equal(plan.at(-1).end, duration);
+  assert.equal(plan.reduce((sum, s) => sum + s.ms, 0), duration);
+  const actions = plan.filter(s => s.kind === 'action');
+  assert.equal(actions.length, duration <= 60000 ? 1 : duration === 180000 ? 3 : 6);
+  assert.ok(actions.every(s => !['knead','thumb'].includes(s.action.id) || region.id === 'calves'));
+  assert.ok(actions.every(s => s.ms <= 48000));
+  for (const [i,s] of plan.entries()) {
+    assert.equal(routineState(region.id,duration,duration-s.start).index,i);
+    if (i < plan.length-1) assert.equal(routineState(region.id,duration,duration-s.end).index,i+1);
+  }
+  let d = { ...initialDraft({selected: region.id}), ...gentle, screen:'recovery', duration, remaining:duration, practiceMs:0 };
+  // A delayed frame crossing several action/rest boundaries accounts for each action precisely.
+  const oneTick = advanceRoutine(d, duration + 5000);
+  assert.equal(oneTick.practiceMs, actions.reduce((sum,s)=>sum+s.ms,0));
+  for (let elapsed=0;elapsed<duration;elapsed+=137) d = advanceRoutine(d, Math.min(137,duration-elapsed));
+  assert.equal(d.practiceMs,oneTick.practiceMs);
+  assert.equal(d.remaining,0);
+  assert.deepEqual(d.routineLog,oneTick.routineLog);
+  assert.equal(routineRecord(d).reduce((sum,s)=>sum+s.seconds,0),d.practiceMs/1000);
+  assert.equal(routineState(region.id,duration,0).complete,true);
+  assert.equal(validateDraft(JSON.parse(JSON.stringify(d))).remaining,0);
+  assert.deepEqual(advanceRoutine(d,0),d);
+}
+assert.equal(publicRoute('#/tutorial/calves?action=routine&duration=300').lessonAction,'routine');
+assert.equal(publicRoute('#/tutorial/calves?action=routine&duration=300').lessonDuration,300000);
+const oldCourse = {...answered,screen:'recovery',remaining:40000,practiceMs:20000}; delete oldCourse.routineVersion;
+assert.equal(validateDraft(oldCourse).remaining,60000);
+assert.equal(validateDraft(oldCourse).practiceMs,20000);
+assert.ok(Math.abs(massagePhase(7.999, 'calves','right','sweep').progress - massagePhase(0,'calves','right','sweep').progress) < 0.001);
+assert.deepEqual(recoveryRoutine('calves',60000).filter(s=>s.action).map(s=>s.action.id), ['light']);
+assert.deepEqual(recoveryRoutine('calves',300000).filter(s=>s.action).map(s=>s.action.id), ['light','knead','sweep','light','knead','sweep']);
+console.log('PASS: 28 automatic courses, exact transitions, delayed ticks, rest exclusion, resume, completed records and routine routes');
+
+const oldV1={...answered,routineVersion:1,duration:60000,remaining:37000,practiceMs:16000,routineLog:{'step-1':16000}};
+const migratedV2=validateDraft(oldV1);
+assert.equal(migratedV2.routineVersion,2);
+assert.equal(migratedV2.remaining,60000);
+assert.equal(migratedV2.practiceMs,16000);
+assert.equal(migratedV2.routineHistory[0].seconds,16);
+assert.deepEqual(migratedV2.routineLog,{});
+assert.deepEqual(validateDraft(migratedV2).routineHistory,migratedV2.routineHistory,'migration must not duplicate history');
+assert.equal(publicRoute('#/tutorial/hamstrings?action=routine&duration=180').lessonDuration,180000);
+assert.equal(makeRecord({...answered,duration:180000,remaining:180000}).plannedSeconds,180);
+console.log('PASS: 3-minute route/record, v1 activity preservation and idempotent migration');

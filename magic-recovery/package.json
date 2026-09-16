@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/prepare-sites-build.mjs",
+    "build:minitool": "vite build --mode minitool && node scripts/package-minitool-3d.mjs",
     "preview": "vite preview",
     "test:sites": "node --test tests/sites-worker.test.mjs",
-    "check": "node scripts/validate.mjs && npm run check:rig",
-    "check:rig": "node scripts/validate-bound-rig.mjs && node scripts/rig/audit-support.mjs"
+    "check": "node scripts/validate.mjs && node scripts/validate-animation-clock.mjs && node scripts/validate-routine-presentation.mjs && node scripts/validate-massage-geometry.mjs && npm run check:rig && npm run check:hand",
+    "check:rig": "node scripts/validate-bound-rig.mjs && node scripts/rig/audit-support.mjs",
+    "check:hand": "node scripts/validate-schematic-hand.mjs",
+    "check:hand:legacy": "node scripts/rig/audit-massage-hand.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

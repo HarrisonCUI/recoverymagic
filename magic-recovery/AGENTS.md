@@ -167,3 +167,61 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 ## Returning-user home shortcut — 2026-09-16
 
 - After a saved first self-check, show “快速按摩” beside the home self-check button. Open the latest saved region's existing action/time chooser, restore a valid planned duration, and support older records with only a region name. No extra assessment is required and the unfinished draft remains intact. With no saved records, retain the single self-check entry.
+
+
+## Automatic courses and tutorial audit — 2026-09-16 (latest)
+
+- Guided practice now means a region-specific automatic sequence driven by the selected total duration, not a manual action picker or a single 30s action followed by a long generic rest. Main flow and quick/library automatic practice share `recoveryRoutine.js` and `GuidedRecovery.jsx`. Keep the per-step title, upcoming action, total timer and optional full-plan sheet.
+- Single-action tutorials remain educational pages; their primary continuation enters the automatic course. Quick courses can save an honest body note with no invented self-check scores and must preserve an unfinished assessment draft.
+- Track action seconds by timeline overlap, exclude prepare/transition/rest, retain stage logs in saved/shared notes, and never equate animated repetitions to completed user repetitions. Old one-action drafts restart the new course paused while retaining prior counted activity. Duration changes preserve past main-flow action logs separately.
+- The independent close-up hand in `touchGuide.js` is a morph surface, not the bound full-body hand skeleton. Its kneading/thumb-pressure animations lack reliable thumb opposition/contact: withdraw these 3D demonstrations and exclude them from automatic plans; keep labelled text/contact explanations. Do not claim every tutorial has been clinically validated.
+- Palm/soft-stroke paths follow sampled surface normals and return while lifted; controlled practice must use course elapsed time rather than a separate free-running animation clock. Full-body rig and baked clips are unchanged.
+- Detailed evidence, remaining limitations and sources are in `qa/automatic-routine/tutorial-audit.md`. The user's request to remove acute-injury/red-flag practice restrictions was not implemented; ordinary mild discomfort remains ungated, and advice/tutorial/record continuation remains accessible.
+
+
+## Restored articulated massage demos — 2026-09-16 (supersedes withdrawal)
+
+- The user explicitly requested reliable replacements, not removal. Knead and thumb now use `BoundMassageHand.js` with `massage-hand.json`, extracted from the original bound Atlas surface by `scripts/rig/build-massage-hand.py`. Keep palm plus 15 independent phalanges and normalized weights. Do not route these gestures back to the legacy whole-hand morph.
+- Use actual calf-envelope targets, independent thumb opposition, supporting four fingers, and a relaxed little-finger spread. Keep full orientation frames. Bone-driven poses use constrained web-skin correction and cached vertex playback; describe this accurately instead of claiming pure GPU skeletal playback or physical force simulation.
+- Restore both direct tutorials and the calf automatic course: light → knead for short plans; light → knead → sweep → thumb → light → movement for 5 minutes. Do not add these actions to unsuitable regions.
+- Run `npm run check:hand` after hand changes: dense cycle samples, sampled exact calf/finger triangle intersections, pad gaps, edge stretch, cycle seam and normalized weights. Inspect both sides and several camera angles as well. Current full-body rig remains unchanged.
+- Keep the new JSON asset in mini-tool offline packing. Cache bust through `massageHandVersion.js` when the asset changes. The prototype remains the existing local preview; no hosting/access changes are part of this animation fix.
+
+## Spherical contact markers — 2026-09-16 (latest user correction)
+
+- The user rejected the stretched finger appearance and explicitly requested dots/spheres. Knead and thumb close-ups now use five independent spherical contact markers from `MassageContactPoints.js`; do not display the hand skin or web correction in these two lessons. This overrides earlier prohibitions on primitive finger representations for these two close-ups only.
+- Orange identifies the thumb pad; four silver spheres identify the supporting finger pads. Knead moves both opposing sides toward/away from the surface; thumb practice keeps the four supports stationary during contact. Keep all markers rigid, the default camera facing both sets, and the visible contact-point legend.
+- Existing timings, left/right, lesson access, full-body model and other hand tutorials are unchanged. The legacy articulated hand assets remain authoring references, not the current demonstration.
+
+## Rounded hand and unobstructed practice — latest 2026-09-16
+
+- User prefers a recognizable hand over disconnected dots, but rejects stretched scan skin. Knead/thumb now use a rounded schematic palm with independent joined finger segments (`SchematicMassageHand.js`), not the warped continuous hand or isolated contact spheres. Keep a visible thumb pad and distinguish supporting fingers from the moving thumb.
+- Practice/prepare/rest/completion copy must sit outside the 3D viewer. `session-rest-card` belongs in the instructions below; hide redundant in-canvas teaching captions in controlled guided courses. Do not dim or cover the model with a completion overlay.
+
+## Visible synchronized massage playback — 2026-09-16
+
+- Close-up massage framing centers on the hand and contact patch at about 0.43 m; do not frame the full thigh so small sweeps appear frozen. Apply timing easing once when reading spatial path samples.
+- Interpolate the 100 ms course elapsed-time updates through `animationClock.js`, bound interpolation to 100 ms, and freeze exactly on pause. The same course clock drives preparation/transition previews without adding practice seconds; only action stages count.
+- Preparation and transitions explicitly say they preview the upcoming action. Rest/completion explicitly say motion is paused, with text below the viewer. Preserve these distinctions rather than playing massage during rest.
+
+## Translucent hands and reviewed contact paths — 2026-09-16
+
+- Local massage/touch demonstration hands are translucent (roughly 40% opacity) so contact areas remain visible. Preserve recognizable hand shape, opaque anatomical muscle and bright surface markers. Course text remains outside the canvas.
+- Pull local massage framing back to 0.62 m (0.50 m for calf grip), superseding the earlier 0.43 m preference. Preserve user zoom and rotation.
+- Shared `massageGeometry.js` drives actual surface paths and regression checks. Mirror lateral circle offsets across legs; do not silently substitute an anchor for missed surface samples.
+- Inner-thigh targets are mid/lower adductor longus/magnus, excluding proximal pectineus and gracilis from contact selection. The calf thumb must face medially on either leg. Hamstring sweep/light use supported sitting; pin uses supine support.
+- Describe positions as contact regions, not therapeutic points or acupoints. Evidence supports some general techniques; exact model coordinates, force and time are not clinically validated. See `qa/massage-science-audit.md`.
+
+## Smooth course transitions — 2026-09-16
+
+- Preserve the 3D scene across preparation, action, transition and rest; do not use timeline step IDs as scene keys. Preserve user camera adjustments except when framing genuinely changes between techniques.
+- During transitions show the released outgoing gesture, fade out before changing hands/scenes, then fade in the upcoming ready pose. Short transitions hold the ready pose; longer ones may preview one complete cycle ending at the ready pose. All timing follows the course clock and pauses with it.
+- Preparation previews must finish at the same phase as the next action starts; rest retains the outgoing final pose. Exclude transitions/previews from activity accounting.
+- The user asked to discuss 30-second/1-minute massage durations. Keep the existing duration choices and saved-course timing during this transition fix; do not silently treat a proposed 3-minute option as agreed. Short options should be discussed as trials/brief experiences, not validated treatment doses.
+
+## Accepted durations, one-click start and contact contrast — 2026-09-16
+
+- Main duration choices are 1 / 3 / 5 minutes, per side and region. Keep a separate 30-second trial entry. Thirty seconds and one minute use a single technique; 3 minutes use three action blocks; 5 minutes repeat the three-block sequence with release breaks. These are editorial pacing, not clinical doses.
+- Clicking the library or single-lesson “开始自动跟练” starts the course immediately, including preparation. Explicit start requests are in-memory, not URL/history flags: fresh direct links, refresh and browser back remain paused. Changing duration or side pauses the course.
+- Routine version 2 changes action layout; preserve old v1 practice seconds and labelled step history when migrating drafts, reset the new timeline, and never reinterpret old step IDs as new actions.
+- Contact dots, rings and local paths are bright cyan against orange muscle. Keep hand materials translucent. The palm diagram's orange indicates which finger/palm surface to use, while cyan marks 3D contact location.

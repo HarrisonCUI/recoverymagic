@@ -133,6 +133,7 @@ export default function MovementScene({
   side,
   playing = false,
   elapsed = 0,
+  controlled = false,
   animationKey = 0,
   compact = false,
   massagePose = false,
@@ -170,7 +171,7 @@ export default function MovementScene({
       setFailed(true);
       return;
     }
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
     renderer.setClearColor(0x101417, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -226,6 +227,9 @@ export default function MovementScene({
       });
     const resize = () => {
       const r = el.getBoundingClientRect();
+      const maxDpr = Math.min(devicePixelRatio || 1, 1.5);
+      const pixelDpr = Math.sqrt(2000000 / Math.max(1, r.width * r.height));
+      renderer.setPixelRatio(Math.max(1, Math.min(maxDpr, pixelDpr)));
       renderer.setSize(r.width, r.height);
       camera.aspect = r.width / Math.max(r.height, 1);
       camera.updateProjectionMatrix();
@@ -354,7 +358,7 @@ export default function MovementScene({
           ))}
         </div>
         <div>
-          {!playing && (
+          {!playing && !controlled && (
             <button
               onClick={() => setDemo((v) => !v)}
               aria-label={demo ? "暂停动作示范" : "播放动作示范"}

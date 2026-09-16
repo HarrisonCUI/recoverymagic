@@ -17,7 +17,15 @@ export default function NoteShare({ records, initialId }) {
     return () => { disposed = true; if (url) URL.revokeObjectURL(url); };
   }, [record, attempt]);
   const ready = asset?.id === record?.id;
-  function download() { saveNoteImage(asset.blob, asset.filename); setMessage('已发起 PNG 下载，可从设备文件中选择图片分享。'); }
+  async function download() {
+    setSharing(true); setMessage('');
+    try {
+      await saveNoteImage(asset.blob, asset.filename);
+      setMessage(__MINITOOL_BUILD__ ? '图片已保存到系统相册。' : '已发起 PNG 下载，可从设备文件中选择图片分享。');
+    } catch (error) {
+      setMessage(error.message || '图片保存失败，请检查权限后重试。');
+    } finally { setSharing(false); }
+  }
   async function share() {
     const file = new File([asset.blob], asset.filename, { type: 'image/png' });
     setSharing(true); setMessage('');
@@ -25,7 +33,7 @@ export default function NoteShare({ records, initialId }) {
       if (navigator.canShare?.({ files: [file] }) && navigator.share) {
         await navigator.share({ files: [file] });
         setMessage('已完成系统分享操作。');
-      } else { download(); setMessage('当前浏览器不支持直接分享，已改为下载图片。'); }
+      } else { await download(); }
     } catch (e) {
       if (e.name !== 'AbortError') setMessage('系统分享未完成，请点击“保存图片”后分享。');
     } finally { setSharing(false); }
@@ -38,7 +46,7 @@ export default function NoteShare({ records, initialId }) {
       {ready ? <img src={asset.url} alt={`${record.region}的详细身体笔记，包含自查感受、行动时长和当时的提醒`} /> : <p role="status">{error || '正在生成清晰长图…'}</p>}
       {error && <button className="secondary" onClick={() => setAttempt(n => n + 1)}>重新生成</button>}
     </div>
-    <div className="share-actions"><button className="secondary" disabled={!ready || sharing} onClick={download}><Download size={18} />保存图片</button><button className="primary" disabled={!ready || sharing} onClick={share}><span>{sharing ? '分享中…' : '分享图片'}</span><ShareNetwork size={18} /></button></div>
+    <div className="share-actions"><button className="secondary" disabled={!ready || sharing} onClick={download}><Download size={18} />{__MINITOOL_BUILD__ ? '保存到相册' : '保存图片'}</button>{!__MINITOOL_BUILD__ && <button className="primary" disabled={!ready || sharing} onClick={share}><span>{sharing ? '分享中…' : '分享图片'}</span><ShareNetwork size={18} /></button>}</div>
     <p className="share-status" role="status">{message || 'PNG 高清长图 · 在本机生成'}</p>
   </div>;
 }

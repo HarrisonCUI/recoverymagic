@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {createAnimationClock} from '../src/animationClock.js';
+const clock=createAnimationClock();
+assert.equal(clock(1000,true,5000),1);
+assert.equal(clock(1000,true,5033),1.033);
+assert.equal(clock(1000,true,5300),1.1);
+assert.equal(clock(1100,true,5301),1.1);
+assert.equal(clock(1100,false,5350),1.1);
+assert.equal(clock(1100,false,9000),1.1);
+assert.equal(clock(1100,true,9100),1.1);
+assert.equal(clock(1100,true,9150),1.15);
+assert.equal(clock(0,true,9200),0);
+console.log('PASS: course interpolation, bounded drift, exact pause/resume and new-action reset');

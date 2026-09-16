@@ -38,7 +38,8 @@ export const muscles = [
     tag: "球类 · 侧向移动",
     match: /adductor|gracilis|pectineus/i,
     view: "front",
-    point: [-0.037, 0.72, 0.032],
+    massageMatch: /adductor (longus|magnus)/i,
+    point: [-0.045, 0.63, 0.025],
     touch:
       "坐稳并让双腿自然分开。隔着薄衣，用指腹轻触大腿内侧中段，不追求找到深处的“结节”。",
     avoid: "远离腹股沟与生殖区域；内侧上端不做深压。",

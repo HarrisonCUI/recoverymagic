@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { loadJsonAsset } from "./assetLoader.js";
 export function touchPhase(seconds, step, side) {
   const t = Math.max(0, Number.isFinite(seconds) ? seconds : 0);
   const part = t % 6;
@@ -25,11 +26,7 @@ export function touchPhase(seconds, step, side) {
 let handAsset;
 function loadHand() {
   if (!handAsset)
-    handAsset = fetch("/models/hand.json")
-      .then((response) => {
-        if (!response.ok) throw new Error("Hand model unavailable");
-        return response.json();
-      })
+    handAsset = loadJsonAsset("hand", "/models/hand.json")
       .catch((error) => {
         handAsset = null;
         throw error;
@@ -76,6 +73,9 @@ export function createTouchHand(scene) {
       color: 0x9aabae,
       metalness: 0.22,
       roughness: 0.52,
+      transparent: true,
+      opacity: 0.42,
+      depthWrite: false,
     });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.name = "BodyParts3D continuous hand surface";

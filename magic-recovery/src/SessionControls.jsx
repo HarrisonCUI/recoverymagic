@@ -1,8 +1,8 @@
 import { Play, Pause, Check, ArrowCounterClockwise } from '@phosphor-icons/react';
-import { SESSION_DURATIONS, durationLabel, relaxationPhase } from './recoveryCatalog';
+import { MAIN_SESSION_DURATIONS, durationLabel, relaxationPhase } from './recoveryCatalog';
 export function DurationPicker({ value, onChange }) {
   return <div className="duration-picker" role="group" aria-label="选择放松时长">
-    {SESSION_DURATIONS.map(ms => <button key={ms} aria-pressed={value === ms} onClick={() => onChange(ms)}>{durationLabel(ms)}</button>)}
+    {(value === 30000 ? [30000, ...MAIN_SESSION_DURATIONS] : MAIN_SESSION_DURATIONS).map(ms => <button key={ms} aria-pressed={value === ms} onClick={() => onChange(ms)}>{durationLabel(ms)}</button>)}
   </div>;
 }
 export function SessionControls({ duration, remaining, running, onDuration, onToggle, onReset }) {

@@ -12,6 +12,11 @@ import {
 import { muscles } from "./data";
 import { createTouchHand, touchPhase } from "./touchGuide";
 import { massagePhase, MASSAGES, TECHNIQUES } from "./massage";
+import { loadBufferAsset, loadJsonAsset } from "./assetLoader";
+import { createCalfSurface } from "./BoundMassageHand";
+import { createSchematicMassageHand } from "./SchematicMassageHand";
+import { massageAnchor, massageMeshes, sampleMassagePath } from "./massageGeometry";
+import { createAnimationClock } from "./animationClock";
 
 export default function LegScene({
   selected,
@@ -28,6 +33,7 @@ export default function LegScene({
   onPlaybackToggle,
   hidePlaybackControl = false,
   technique = "light",
+  elapsedMs,
 }) {
   const [touchPlaying, setTouchPlaying] = useState(
     () => !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
@@ -47,6 +53,7 @@ export default function LegScene({
     animationKey,
     touchStep,
     technique,
+    elapsedMs,
     touchPlaying: playback ?? touchPlaying,
   };
   const [status, setStatus] = useState("loading"),
@@ -70,7 +77,7 @@ export default function LegScene({
       setStatus("error");
       return;
     }
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
     renderer.setClearColor(0x090909, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -130,7 +137,8 @@ export default function LegScene({
     const marker = new THREE.Mesh(
       new THREE.SphereGeometry(0.012, 24, 16),
       new THREE.MeshBasicMaterial({
-        color: 0xffaa77,
+        color: 0x00d5ed,
+        toneMapped: false,
         transparent: true,
         opacity: 0.8,
       }),
@@ -140,7 +148,8 @@ export default function LegScene({
     const halo = new THREE.Mesh(
       new THREE.TorusGeometry(0.028, 0.0015, 8, 64),
       new THREE.MeshBasicMaterial({
-        color: 0xff8a45,
+        color: 0x00d5ed,
+        toneMapped: false,
         transparent: true,
         opacity: 0.8,
       }),
@@ -150,6 +159,11 @@ export default function LegScene({
     const scan = new THREE.Mesh(new THREE.TorusGeometry(.25, .001, 6, 100), new THREE.MeshBasicMaterial({ color: 0x6fc3dd, transparent: true, opacity: .24 }));
     scan.rotation.x = Math.PI / 2; scan.visible = hero; scene.add(scan);
     const hand = createTouchHand(scene);
+    const gripGroup = new THREE.Group();
+    gripGroup.matrixAutoUpdate = false;
+    gripGroup.visible = false;
+    scene.add(gripGroup);
+    const gripClips = new Map();
     hand.userData.ready.catch(() => {
       hand.userData.failed = true;
       if (!disposed && ["touch", "massage"].includes(props.current.mode))
@@ -157,6 +171,9 @@ export default function LegScene({
     });
     const resize = () => {
       const { width, height } = el.getBoundingClientRect();
+      const maxDpr = Math.min(devicePixelRatio || 1, 1.5);
+      const pixelDpr = Math.sqrt(2000000 / Math.max(1, width * height));
+      renderer.setPixelRatio(Math.max(1, Math.min(maxDpr, pixelDpr)));
       renderer.setSize(width, height);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
@@ -217,14 +234,8 @@ export default function LegScene({
       desiredTarget = null;
     });
     Promise.all([
-      fetch("/models/legs.json", { signal: abort.signal }).then((r) => {
-        if (!r.ok) throw Error();
-        return r.json();
-      }),
-      fetch("/models/legs.bin", { signal: abort.signal }).then((r) => {
-        if (!r.ok) throw Error();
-        return r.arrayBuffer();
-      }),
+      loadJsonAsset("legsMeta", "/models/legs.json", { signal: abort.signal }),
+      loadBufferAsset("legsBuffer", "/models/legs.bin", { signal: abort.signal }),
     ])
       .then(([data, buf]) => {
         if (disposed) return;
@@ -282,95 +293,27 @@ export default function LegScene({
     function contactFor(p, selectedSide) {
       const cacheKey = p.selected + selectedSide;
       if (contacts[cacheKey]) return contacts[cacheKey];
-      const muscle = muscles.find((m) => m.id === p.selected);
-      const chosen = meshes.filter(
-        (m) =>
-          m.userData.group === p.selected && m.userData.side === selectedSide && (!muscle.massageMatch || muscle.massageMatch.test(m.userData.name)),
-      );
-      const box = new THREE.Box3();
-      chosen.forEach((m) => box.expandByObject(m));
-      const sign = selectedSide === "left" ? 1 : -1;
-      const normal =
-        ["outerthigh", "outercalf"].includes(p.selected)
-          ? new THREE.Vector3(sign * 0.8, 0, p.selected === "outerthigh" ? 0.6 : 0.15).normalize()
-          : p.selected === "adductors"
-          ? new THREE.Vector3(-sign * 0.8, 0, 0.6)
-          : new THREE.Vector3(
-              p.selected === "shins" ? sign * 0.3 : 0,
-              0,
-              muscle.view === "back" ? -1 : 1,
-            ).normalize();
-      const point = new THREE.Vector3(
-        sign * Math.abs(muscle.point[0]),
-        muscle.point[1],
-        muscle.point[2],
-      );
-      if (!box.isEmpty()) {
-        point.y = THREE.MathUtils.clamp(
-          point.y,
-          box.min.y + 0.02,
-          box.max.y - 0.02,
-        );
-      }
-      const surfaceRay = new THREE.Raycaster(
-        point.clone().addScaledVector(normal, 0.6),
-        normal.clone().negate(),
-      );
-      let hit = surfaceRay.intersectObjects(chosen)[0];
-      if (!hit && !box.isEmpty()) {
-        box.getCenter(point);
-        point.y = THREE.MathUtils.clamp(
-          muscle.point[1],
-          box.min.y + 0.02,
-          box.max.y - 0.02,
-        );
-        surfaceRay.set(
-          point.clone().addScaledVector(normal, 0.6),
-          normal.clone().negate(),
-        );
-        hit = surfaceRay.intersectObjects(chosen)[0];
-      }
-      if (hit) point.copy(hit.point);
-      const result = {
-        point,
-        normal,
-        size: box.isEmpty()
-          ? new THREE.Vector3(0.16, 0.4, 0.12)
-          : box.getSize(new THREE.Vector3()),
-      };
-      if (chosen.length) contacts[cacheKey] = result;
+      const result = massageAnchor(meshes, p.selected, selectedSide);
+      if (meshes.length) contacts[cacheKey] = result;
       return result;
     }
     const massagePaths = new Map();
+    const animationClock = createAnimationClock();
     function massageContact(p, progress) {
       const key = p.selected + p.side + p.technique;
       if (!massagePaths.has(key) && meshes.length) {
         const anchor = contactFor(p, p.side),
           travel = MASSAGES[p.selected].travel;
-        const chosen = meshes.filter(
-          (m) => m.userData.group === p.selected && m.userData.side === p.side && (!muscles.find(r => r.id === p.selected).massageMatch || muscles.find(r => r.id === p.selected).massageMatch.test(m.userData.name)),
-        );
-        const samples = [];
-        for (let i = 0; i <= 40; i++) {
-          const point = anchor.point.clone();
-          const gesture = massagePhase(1.5 + 4.5 * i / 40, p.selected, p.side, p.technique);
-          point.y += gesture.offset;
-          const tangent = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), anchor.normal).normalize();
-          point.addScaledVector(tangent, gesture.lateral);
-          const ray = new THREE.Raycaster(
-            point.clone().addScaledVector(anchor.normal, 0.2),
-            anchor.normal.clone().negate(),
-          );
-          const hit = ray.intersectObjects(chosen)[0];
-          samples.push(hit ? hit.point.clone() : anchor.point.clone());
-        }
+        const chosen = massageMeshes(meshes, p.selected, p.side);
+        const { samples, normals } = sampleMassagePath(anchor, chosen, p.technique, travel, p.side);
         const points = samples.map((point) =>
           point.clone().addScaledVector(anchor.normal, 0.007),
         );
         const trail = new THREE.Line(
           new THREE.BufferGeometry().setFromPoints(points),
           new THREE.LineDashedMaterial({
-            color: 0xffbd85,
+            color: 0x00d5ed,
+        toneMapped: false,
             dashSize: 0.005,
             gapSize: 0.003,
             transparent: true,
@@ -381,7 +324,7 @@ export default function LegScene({
         scene.add(trail);
         const arrow = new THREE.Mesh(
           new THREE.ConeGeometry(0.005, 0.016, 12),
-          new THREE.MeshBasicMaterial({ color: 0xffbd85 }),
+          new THREE.MeshBasicMaterial({ color: 0x00d5ed, toneMapped: false }),
         );
         arrow.position.copy(points[40]);
         arrow.quaternion.setFromUnitVectors(
@@ -389,7 +332,7 @@ export default function LegScene({
           points[40].clone().sub(points[36]).normalize(),
         );
         scene.add(arrow);
-        massagePaths.set(key, { samples, normal: anchor.normal, trail, arrow });
+        massagePaths.set(key, { samples, normals, normal: anchor.normal, trail, arrow });
       }
       massagePaths.forEach((path, pathKey) => {
         path.trail.visible = path.arrow.visible = pathKey === key && !["knead", "thumb"].includes(p.technique);
@@ -406,7 +349,7 @@ export default function LegScene({
         point: path.samples[low]
           .clone()
           .lerp(path.samples[Math.min(40, low + 1)], index - low),
-        normal: path.normal,
+        normal: path.normals[low].clone().lerp(path.normals[Math.min(40, low + 1)], index - low).normalize(),
       };
     }
     function animate(now) {
@@ -416,6 +359,7 @@ export default function LegScene({
       lastDraw = now;
       const p = props.current;
       const isMassage = p.mode === "massage";
+      const isGrip = isMassage && p.selected === "calves" && ["knead", "thumb"].includes(p.technique);
       const isTouch = p.mode === "touch" || isMassage;
       const sceneKey =
         p.mode + p.animationKey + p.touchStep + p.selected + p.side + p.technique;
@@ -423,17 +367,18 @@ export default function LegScene({
         touchTime = 0;
         lastMode = sceneKey;
       }
-      if (isTouch && p.touchPlaying) touchTime += dt;
+      if (isMassage && Number.isFinite(p.elapsedMs)) touchTime = animationClock(p.elapsedMs, p.touchPlaying, now);
+      else if (isTouch && p.touchPlaying) touchTime += dt;
       const touch = isMassage
         ? massagePhase(touchTime, p.selected, p.side, p.technique)
         : touchPhase(touchTime, p.touchStep, p.side);
-      const focusKey = p.view + p.side + p.selected + p.mode + p.touchStep;
+      const focusKey = p.view + p.side + p.selected + p.mode + p.touchStep + isGrip + p.technique;
       if (focusKey !== lastView) {
         controls.minDistance = isTouch ? 0.35 : 1.15;
         if (isTouch) {
           const anchor = contactFor(p, p.side);
           desiredTarget = anchor.point.clone();
-          desiredTarget.y -= 0.045; // Frame the continuous hand through its wrist.
+          desiredTarget.y += isGrip ? 0 : isMassage ? (TECHNIQUES[p.technique]?.area === "pads" ? -.065 : -.005) : -.045;
           if (p.touchStep === 2 && !isMassage) desiredTarget.x = 0;
           const distance = THREE.MathUtils.clamp(
             (Math.max(anchor.size.y, 0.3) /
@@ -448,7 +393,7 @@ export default function LegScene({
                 ? anchor.normal.clone().add(new THREE.Vector3(0, .12, .2))
                 : new THREE.Vector3(p.side === "right" ? -1 : 1, 0.12, 0.1)
               : p.view === "back"
-                ? new THREE.Vector3(0.15, 0.05, -1)
+                ? new THREE.Vector3(isGrip ? 0 : .15, isGrip ? .2 : .05, -1)
                 : p.selected === "adductors"
                   ? anchor.normal.clone().add(new THREE.Vector3(0, 0.08, 0.2))
                   : new THREE.Vector3(
@@ -461,7 +406,7 @@ export default function LegScene({
             .add(
               direction
                 .normalize()
-                .multiplyScalar(distance * (isMassage ? 0.78 : 1)),
+                .multiplyScalar(isGrip ? .50 : isMassage ? .62 : distance),
             );
         } else if (p.mode === "hero") {
           desiredTarget = new THREE.Vector3(0, 0.49, 0);
@@ -520,7 +465,8 @@ export default function LegScene({
         }
         lastKey = k;
       }
-      hand.visible = isTouch && meshes.length > 0;
+      hand.visible = isTouch && !isGrip && meshes.length > 0;
+      gripGroup.visible = false;
       marker.visible = halo.visible = hand.visible;
       if (hand.visible) {
         const anchor = isMassage
@@ -530,10 +476,9 @@ export default function LegScene({
           .copy(anchor.point)
           .addScaledVector(anchor.normal, 0.005 + 0.075 * touch.hover);
         hand.position.y -= 0.04 * touch.hover;
-        hand.quaternion.setFromUnitVectors(
-          new THREE.Vector3(0, 0, 1),
-          anchor.normal,
-        );
+        const alongLeg = new THREE.Vector3(0, 1, 0).addScaledVector(anchor.normal, -anchor.normal.y).normalize();
+        const acrossLeg = new THREE.Vector3().crossVectors(alongLeg, anchor.normal).normalize();
+        hand.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(acrossLeg, alongLeg, anchor.normal));
         hand.scale.set(touch.side === "left" ? -1 : 1, 1, 1);
         hand.userData.setCurl?.(isMassage ? touch.curl : 0);
         if (isMassage && TECHNIQUES[p.technique]?.area !== "pads") {
@@ -562,6 +507,21 @@ export default function LegScene({
           lastLabel = label;
           setTouchLabel(label);
         }
+      }
+      if (isGrip && meshes.length) {
+        const key = p.side + ':' + p.technique;
+        if (!gripClips.has(key)) {
+          const selectedMeshes = meshes.filter(m => m.userData.group === "calves" && m.userData.side === p.side);
+          const surface = createCalfSurface(selectedMeshes, contactFor(p, p.side), p.side);
+          const clip = createSchematicMassageHand(surface, p.technique);
+          gripGroup.add(clip.mesh);gripClips.set(key, clip);
+        }
+        const clip = gripClips.get(key);
+        gripClips.forEach((value, id) => { value.mesh.visible = id === key; });
+        clip.update(touchTime);gripGroup.matrix.copy(clip.surface.matrix);gripGroup.visible = true;
+        marker.visible = halo.visible = false;
+        const label = (p.side === "left" ? "左腿" : "右腿") + " · " + touch.phase;
+        if (label !== lastLabel) { lastLabel = label;setTouchLabel(label); }
       }
       if (hero) scan.position.y = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? .45 : .43 + Math.sin(now * .00035) * .27;
       controls.update();

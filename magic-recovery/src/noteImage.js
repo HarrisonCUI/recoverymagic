@@ -14,6 +14,7 @@ export function noteSections(record) {
       ['恢复动作', record.recoveryActionName || (record.carePlan ? '本次未记录按摩跟练' : '未记录动作')],
       ['计划时长', Number.isFinite(record.plannedSeconds) && record.recoveryActionName ? `${record.plannedSeconds} 秒` : '未记录'],
       ['实际活动', `${Math.max(0, record.seconds || 0)} 秒`],
+      ...(record.routineSteps || []).map((step, i) => [`动作 ${i + 1}`, `${step.name} · 跟练计时 ${step.seconds} 秒`]),
       ...(record.careRestSeconds > 0 ? [['支撑休息', `${record.careRestSeconds} 秒（单独计时）`]] : []),
       ['中途停止', record.stopped ? '因不适增加而停止' : '未记录中途停止'],
     ] },
@@ -93,7 +94,25 @@ export async function renderNoteImage(record) {
   commands.forEach(draw => draw());
   return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('图片生成失败，请重试')), 'image/png'));
 }
-export function saveNoteImage(blob, filename) {
+function blobDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('图片读取失败'));
+    reader.readAsDataURL(blob);
+  });
+}
+export async function saveNoteImage(blob, filename) {
+  if (__MINITOOL_BUILD__) {
+    const bridge = window.xhs && window.xhs.miniTool;
+    if (!bridge || typeof bridge.writeTempFile !== 'function' || typeof bridge.saveImageToPhotosAlbum !== 'function') {
+      throw new Error('当前环境未提供相册能力');
+    }
+    const data = await blobDataUrl(blob);
+    const result = await bridge.writeTempFile({ data });
+    await bridge.saveImageToPhotosAlbum({ filePath: result.filePath });
+    return;
+  }
   const url = URL.createObjectURL(blob), link = document.createElement('a');
   link.href = url; link.download = filename; link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);

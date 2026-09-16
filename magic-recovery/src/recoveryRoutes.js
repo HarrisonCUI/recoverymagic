@@ -10,7 +10,7 @@ export function publicRoute(hash) {
     if (match[1] === 'library') return { magicPage: 'library', libraryRegion: match[2] };
     const params = new URLSearchParams(query);
     const route = { magicPage: 'tutorial', lessonRegion: match[2] };
-    if (query) { route.lessonAction = actionFor(match[2], params.get('action')).id; route.lessonDuration = sessionDuration(Number(params.get('duration')) * 1000); }
+    if (query) { route.lessonAction = params.get('action') === 'routine' ? 'routine' : actionFor(match[2], params.get('action')).id; route.lessonDuration = sessionDuration(Number(params.get('duration')) * 1000); }
     return route;
   }
   return { magicPage: path === '#/library' ? 'library' : 'home' };

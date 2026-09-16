@@ -1,3 +1,4 @@
+import { routineRecord, ROUTINE_VERSION } from "./recoveryRoutine.js";
 import { muscles, assess } from "./data.js";
 import { sessionDuration, actionFor, guidedActionFor } from "./recoveryCatalog.js";
 export const FLOW = [
@@ -26,6 +27,8 @@ export const initialDraft = (seed = {}) => ({
   touchStep: 1,
   recoveryStep: 1,
   recoveryMethod: "massage",
+  routineVersion: ROUTINE_VERSION,
+  routineLog: {},
   recoveryAction: actionFor(seed.selected || "quads").id,
   careStep: 0,
   careNote: "",
@@ -75,6 +78,10 @@ export function validateDraft(d) {
   return {
     ...d,
     recoveryAction: action.id,
+    routineVersion: ROUTINE_VERSION,
+    routineLog: d.routineVersion === ROUTINE_VERSION && d.routineLog && typeof d.routineLog === "object" ? Object.fromEntries(Object.entries(d.routineLog).filter(([key, ms]) => /^step-\d+$/.test(key) && Number.isFinite(ms) && ms >= 0)) : {},
+    routineHistory: [...(Array.isArray(d.routineHistory) ? d.routineHistory.filter(s => s && typeof s.name === "string" && Number.isFinite(s.seconds) && s.seconds >= 0) : []), ...(d.routineVersion === 1 ? routineRecord(d).filter(s => s.seconds > 0) : [])].slice(-100),
+    remaining: d.routineVersion === ROUTINE_VERSION ? d.remaining : sessionDuration(d.duration),
     duration: sessionDuration(d.duration),
     practiceMs: Number.isFinite(d.practiceMs) && d.practiceMs >= 0 ? d.practiceMs : Math.max(0, sessionDuration(d.duration) - d.remaining),
     screen:
@@ -169,8 +176,9 @@ export function makeRecord(d, { stopOnly = false } = {}) {
     after: stopOnly ? null : d.after,
     seconds: Math.round((d.practiceMs ?? (sessionDuration(d.duration) - d.remaining)) / 1000),
     plannedSeconds: sessionDuration(d.duration) / 1000,
-    recoveryAction: guidedActionFor(d).id,
-    recoveryActionName: d.screen === "care" ? null : guidedActionFor(d).name,
+    recoveryAction: d.routineVersion === ROUTINE_VERSION ? "routine" : guidedActionFor(d).id,
+    recoveryActionName: d.screen === "care" ? null : d.routineVersion === ROUTINE_VERSION ? "自动跟练" : guidedActionFor(d).name,
+    routineSteps: d.screen !== "care" && d.routineVersion === ROUTINE_VERSION ? [...(d.routineHistory || []), ...routineRecord(d)] : [],
     referenceId: d.referenceId || null,
   };
 }
