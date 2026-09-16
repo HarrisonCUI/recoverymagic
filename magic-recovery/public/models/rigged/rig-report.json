@@ -1,0 +1,20 @@
+{
+  "bones": 51,
+  "unweightedVertices": 0,
+  "clips": [
+    "quads-left",
+    "hamstrings-left",
+    "adductors-left",
+    "calves-left",
+    "shins-left",
+    "supine-left",
+    "quads-right",
+    "hamstrings-right",
+    "adductors-right",
+    "calves-right",
+    "shins-right",
+    "supine-right"
+  ],
+  "source": "Human Atlas / BodyParts3D CC BY 4.0",
+  "pipeline": "Anatomically constrained Blender heat weights, continuous cloth weights, 4 influences, hierarchical bones, FK legs + two-bone arm IK, forearm twist, phalange rotations, baked clips"
+}

@@ -1,0 +1,2 @@
+import React from 'react';import {createRoot} from 'react-dom/client';import MovementScene from '/src/MovementScene.jsx';import {muscles} from '/src/data.js';import '/src/styles.css';
+createRoot(document.getElementById('root')).render(<div style={{padding:20}}><h1 style={{fontSize:20,marginBottom:12}}>Human Atlas · 五种动作 / 左侧 / 固定第 2 秒姿势</h1><div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12}}>{muscles.map(m=><div key={m.id}><h2 style={{fontSize:14,padding:10}}>{m.name}</h2><MovementScene selected={m.id} side="left" elapsed={2000}/></div>)}</div></div>);

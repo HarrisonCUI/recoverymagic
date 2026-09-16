@@ -1,0 +1,3 @@
+import fs from 'node:fs';import * as THREE from 'three';import {createAtlasRig} from '../../src/AtlasRig.js';
+const bytes=fs.readFileSync('public/models/movement.bin');globalThis.fetch=async()=>({ok:true,json:async()=>JSON.parse(fs.readFileSync('public/models/movement.json')),arrayBuffer:async()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength)});
+const scene=new THREE.Scene();await createAtlasRig(scene,'hamstrings','right');const g=scene.children.find(o=>o.name==='Atlas opaque sports shorts').geometry;fs.writeFileSync('scripts/rig/clothing.json',JSON.stringify({positions:Array.from(g.attributes.position.array),indices:Array.from(g.index.array)}));

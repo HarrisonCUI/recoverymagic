@@ -1,0 +1,837 @@
+{
+  "samples": [
+    {
+      "side": "left",
+      "phase": 0,
+      "kneeAngle": 70.09406252738289,
+      "footShortsDistance": 0.22358961766201563,
+      "footLegDistance": 0.2996687889589827,
+      "footThighDistance": 0.20748919737962673,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 16.706068059920327,
+          "wristAreaRatio": 0.8631755884429827,
+          "closest": 0.0017422192826094436,
+          "palmMedian": 0.009271086797316176,
+          "palmClose": 43,
+          "posteriorContacts": 124,
+          "palmFacing": 0.7579005713572907,
+          "depth": 0.0017422192826094436
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.71493193782218,
+          "wristAreaRatio": 0.8752875678889348,
+          "closest": 0.004138606056113257,
+          "palmMedian": 0.012541486105766863,
+          "palmClose": 31,
+          "posteriorContacts": 33,
+          "palmFacing": 0.8731411451020127,
+          "depth": 0.0037891143177720323
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "phase": 0.5,
+      "kneeAngle": 71.03349247287929,
+      "footShortsDistance": 0.22784532593095574,
+      "footLegDistance": 0.3058850343890483,
+      "footThighDistance": 0.21053321033773842,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 16.706068059920327,
+          "wristAreaRatio": 0.8631755884429827,
+          "closest": 0.0017422192826094436,
+          "palmMedian": 0.009271086797316176,
+          "palmClose": 43,
+          "posteriorContacts": 124,
+          "palmFacing": 0.7579005713572907,
+          "depth": 0.0017422192826094436
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.71493193782218,
+          "wristAreaRatio": 0.8752875678889348,
+          "closest": 0.004138606056113257,
+          "palmMedian": 0.012541486105766863,
+          "palmClose": 31,
+          "posteriorContacts": 33,
+          "palmFacing": 0.8731411451020127,
+          "depth": 0.0037891143177720323
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "phase": 1,
+      "kneeAngle": 74.36972694739575,
+      "footShortsDistance": 0.24287414847852828,
+      "footLegDistance": 0.3281379660633642,
+      "footThighDistance": 0.2208157125649456,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 16.706068059920327,
+          "wristAreaRatio": 0.8631755884429827,
+          "closest": 0.0017422192826094436,
+          "palmMedian": 0.009271086797316176,
+          "palmClose": 43,
+          "posteriorContacts": 124,
+          "palmFacing": 0.7579005713572907,
+          "depth": 0.0017422192826094436
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.71493193782218,
+          "wristAreaRatio": 0.8752875678889348,
+          "closest": 0.004138606056113257,
+          "palmMedian": 0.012541486105766863,
+          "palmClose": 31,
+          "posteriorContacts": 33,
+          "palmFacing": 0.8731411451020127,
+          "depth": 0.0037891143177720323
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "phase": 1.5,
+      "kneeAngle": 79.24693489806351,
+      "footShortsDistance": 0.2645677960653734,
+      "footLegDistance": 0.3608429164926843,
+      "footThighDistance": 0.23366107388386248,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 16.706068059920327,
+          "wristAreaRatio": 0.8631755884429827,
+          "closest": 0.0017422192826094436,
+          "palmMedian": 0.009271086797316176,
+          "palmClose": 43,
+          "posteriorContacts": 125,
+          "palmFacing": 0.7579005713572907,
+          "depth": 0.0017422192826094436
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.71493193782218,
+          "wristAreaRatio": 0.8752875678889348,
+          "closest": 0.004138606056113257,
+          "palmMedian": 0.012541486105766863,
+          "palmClose": 31,
+          "posteriorContacts": 33,
+          "palmFacing": 0.8731411451020127,
+          "depth": 0.0037891143177720323
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "phase": 2,
+      "kneeAngle": 84.35830556080366,
+      "footShortsDistance": 0.2868857476703919,
+      "footLegDistance": 0.39173798259565196,
+      "footThighDistance": 0.24468999666268115,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 16.706068059920327,
+          "wristAreaRatio": 0.8631755884429827,
+          "closest": 0.0017422192826094436,
+          "palmMedian": 0.009271086797316176,
+          "palmClose": 43,
+          "posteriorContacts": 124,
+          "palmFacing": 0.7579005713572907,
+          "depth": 0.0017422192826094436
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.71493193782218,
+          "wristAreaRatio": 0.8752875678889348,
+          "closest": 0.004138606056113257,
+          "palmMedian": 0.012541486105766863,
+          "palmClose": 31,
+          "posteriorContacts": 33,
+          "palmFacing": 0.8731411451020127,
+          "depth": 0.0037891143177720323
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "phase": 2.5,
+      "kneeAngle": 88.33427797882763,
+      "footShortsDistance": 0.30390856504930464,
+      "footLegDistance": 0.4124390123791354,
+      "footThighDistance": 0.2523701230952176,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 16.706068059920327,
+          "wristAreaRatio": 0.8631755884429827,
+          "closest": 0.0017422192826094436,
+          "palmMedian": 0.009271086797316176,
+          "palmClose": 43,
+          "posteriorContacts": 124,
+          "palmFacing": 0.7579005713572907,
+          "depth": 0.0017422192826094436
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.71493193782218,
+          "wristAreaRatio": 0.8752875678889348,
+          "closest": 0.004138606056113257,
+          "palmMedian": 0.012541486105766863,
+          "palmClose": 31,
+          "posteriorContacts": 33,
+          "palmFacing": 0.8731411451020127,
+          "depth": 0.0037891143177720323
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "phase": 3,
+      "kneeAngle": 90.10943353984106,
+      "footShortsDistance": 0.31140487065741745,
+      "footLegDistance": 0.42159728792194745,
+      "footThighDistance": 0.2557668906022313,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 16.706068059920327,
+          "wristAreaRatio": 0.8631755884429827,
+          "closest": 0.0017422192826094436,
+          "palmMedian": 0.009271086797316176,
+          "palmClose": 43,
+          "posteriorContacts": 124,
+          "palmFacing": 0.7579005713572907,
+          "depth": 0.0017422192826094436
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.71493193782218,
+          "wristAreaRatio": 0.8752875678889348,
+          "closest": 0.004138606056113257,
+          "palmMedian": 0.012541486105766863,
+          "palmClose": 31,
+          "posteriorContacts": 33,
+          "palmFacing": 0.8731411451020127,
+          "depth": 0.0037891143177720323
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "phase": 3.5,
+      "kneeAngle": 89.20815720607267,
+      "footShortsDistance": 0.30760716380131975,
+      "footLegDistance": 0.41694940125479624,
+      "footThighDistance": 0.25407533782570024,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 16.706068059920327,
+          "wristAreaRatio": 0.8631755884429827,
+          "closest": 0.0017422192826094436,
+          "palmMedian": 0.009271086797316176,
+          "palmClose": 43,
+          "posteriorContacts": 124,
+          "palmFacing": 0.7579005713572907,
+          "depth": 0.0017422192826094436
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.71493193782218,
+          "wristAreaRatio": 0.8752875678889348,
+          "closest": 0.004138606056113257,
+          "palmMedian": 0.012541486105766863,
+          "palmClose": 31,
+          "posteriorContacts": 33,
+          "palmFacing": 0.8731411451020127,
+          "depth": 0.0037891143177720323
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "phase": 4,
+      "kneeAngle": 85.87193997648414,
+      "footShortsDistance": 0.2934030134071612,
+      "footLegDistance": 0.3997440992513369,
+      "footThighDistance": 0.24759359381655274,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 16.706068059920327,
+          "wristAreaRatio": 0.8631755884429827,
+          "closest": 0.0017422192826094436,
+          "palmMedian": 0.009271086797316176,
+          "palmClose": 43,
+          "posteriorContacts": 124,
+          "palmFacing": 0.7579005713572907,
+          "depth": 0.0017422192826094436
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.71493193782218,
+          "wristAreaRatio": 0.8752875678889348,
+          "closest": 0.004138606056113257,
+          "palmMedian": 0.012541486105766863,
+          "palmClose": 31,
+          "posteriorContacts": 33,
+          "palmFacing": 0.8731411451020127,
+          "depth": 0.0037891143177720323
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "phase": 4.5,
+      "kneeAngle": 80.99472223125228,
+      "footShortsDistance": 0.27225068208848774,
+      "footLegDistance": 0.3726569751119455,
+      "footThighDistance": 0.23766608714820875,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 16.706068059920327,
+          "wristAreaRatio": 0.8631755884429827,
+          "closest": 0.0017422192826094436,
+          "palmMedian": 0.009271086797316176,
+          "palmClose": 43,
+          "posteriorContacts": 124,
+          "palmFacing": 0.7579005713572907,
+          "depth": 0.0017422192826094436
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.71493193782218,
+          "wristAreaRatio": 0.8752875678889348,
+          "closest": 0.004138606056113257,
+          "palmMedian": 0.012541486105766863,
+          "palmClose": 31,
+          "posteriorContacts": 33,
+          "palmFacing": 0.8731411451020127,
+          "depth": 0.0037891143177720323
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "phase": 5,
+      "kneeAngle": 75.88334155320811,
+      "footShortsDistance": 0.24964433296875443,
+      "footLegDistance": 0.3382330602715135,
+      "footThighDistance": 0.22520167230764235,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 16.706068059920327,
+          "wristAreaRatio": 0.8631755884429827,
+          "closest": 0.0017422192826094436,
+          "palmMedian": 0.009271086797316176,
+          "palmClose": 43,
+          "posteriorContacts": 124,
+          "palmFacing": 0.7579005713572907,
+          "depth": 0.0017422192826094436
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.71493193782218,
+          "wristAreaRatio": 0.8752875678889348,
+          "closest": 0.004138606056113257,
+          "palmMedian": 0.012541486105766863,
+          "palmClose": 31,
+          "posteriorContacts": 33,
+          "palmFacing": 0.8731411451020127,
+          "depth": 0.0037891143177720323
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "phase": 5.5,
+      "kneeAngle": 71.90735705096914,
+      "footShortsDistance": 0.23179506398650565,
+      "footLegDistance": 0.31169900256469946,
+      "footThighDistance": 0.2133068536851655,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 16.706068059920327,
+          "wristAreaRatio": 0.8631755884429827,
+          "closest": 0.0017422192826094436,
+          "palmMedian": 0.009271086797316176,
+          "palmClose": 43,
+          "posteriorContacts": 124,
+          "palmFacing": 0.7579005713572907,
+          "depth": 0.0017422192826094436
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.71493193782218,
+          "wristAreaRatio": 0.8752875678889348,
+          "closest": 0.004138606056113257,
+          "palmMedian": 0.012541486105766863,
+          "palmClose": 31,
+          "posteriorContacts": 33,
+          "palmFacing": 0.8731411451020127,
+          "depth": 0.0037891143177720323
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "phase": 6,
+      "kneeAngle": 70.13238524248267,
+      "footShortsDistance": 0.22376340587683874,
+      "footLegDistance": 0.2999216373031462,
+      "footThighDistance": 0.20761461720117436,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 16.706068059920327,
+          "wristAreaRatio": 0.8631755884429827,
+          "closest": 0.0017422192826094436,
+          "palmMedian": 0.009271086797316176,
+          "palmClose": 43,
+          "posteriorContacts": 124,
+          "palmFacing": 0.7579005713572907,
+          "depth": 0.0017422192826094436
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.71493193782218,
+          "wristAreaRatio": 0.8752875678889348,
+          "closest": 0.004138606056113257,
+          "palmMedian": 0.012541486105766863,
+          "palmClose": 31,
+          "posteriorContacts": 33,
+          "palmFacing": 0.8731411451020127,
+          "depth": 0.0037891143177720323
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "phase": 0,
+      "kneeAngle": 70.09406252738289,
+      "footShortsDistance": 0.22289509279170314,
+      "footLegDistance": 0.2996949562396883,
+      "footThighDistance": 0.2074471295287582,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 18.074221392378544,
+          "wristAreaRatio": 0.8642601902030365,
+          "closest": 0.001673725474732025,
+          "palmMedian": 0.023968814272738698,
+          "palmClose": 19,
+          "posteriorContacts": 52,
+          "palmFacing": 0.8781911195509058,
+          "depth": 0.0032273138043188133
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.267724435590065,
+          "wristAreaRatio": 0.8620832250201549,
+          "closest": 0.0017599390414529503,
+          "palmMedian": 0.008138797095305447,
+          "palmClose": 40,
+          "posteriorContacts": 105,
+          "palmFacing": 0.8618027861225114,
+          "depth": 0.0017599390414529503
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "phase": 0.5,
+      "kneeAngle": 71.03349247287929,
+      "footShortsDistance": 0.22719780371030662,
+      "footLegDistance": 0.3059306331161921,
+      "footThighDistance": 0.21046569464901185,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 18.074221392378544,
+          "wristAreaRatio": 0.8642601902030365,
+          "closest": 0.001673725474732025,
+          "palmMedian": 0.023968814272738698,
+          "palmClose": 19,
+          "posteriorContacts": 52,
+          "palmFacing": 0.8781911195509058,
+          "depth": 0.0032273138043188133
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.267724435590065,
+          "wristAreaRatio": 0.8620832250201549,
+          "closest": 0.0017599390414529503,
+          "palmMedian": 0.008138797095305447,
+          "palmClose": 40,
+          "posteriorContacts": 105,
+          "palmFacing": 0.8618027861225114,
+          "depth": 0.0017599390414529503
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "phase": 1,
+      "kneeAngle": 74.36972694739575,
+      "footShortsDistance": 0.24239945334821794,
+      "footLegDistance": 0.3283118845495157,
+      "footThighDistance": 0.2206236020285619,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 18.074221392378544,
+          "wristAreaRatio": 0.8642601902030365,
+          "closest": 0.001673725474732025,
+          "palmMedian": 0.023968814272738698,
+          "palmClose": 19,
+          "posteriorContacts": 52,
+          "palmFacing": 0.8781911195509058,
+          "depth": 0.0032273138043188133
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.267724435590065,
+          "wristAreaRatio": 0.8620832250201549,
+          "closest": 0.0017599390414529503,
+          "palmMedian": 0.008138797095305447,
+          "palmClose": 40,
+          "posteriorContacts": 105,
+          "palmFacing": 0.8618027861225114,
+          "depth": 0.0017599390414529503
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "phase": 1.5,
+      "kneeAngle": 79.24693489806351,
+      "footShortsDistance": 0.26432128811991934,
+      "footLegDistance": 0.3612683511141094,
+      "footThighDistance": 0.23325027375959137,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 18.074221392378544,
+          "wristAreaRatio": 0.8642601902030365,
+          "closest": 0.001673725474732025,
+          "palmMedian": 0.023968814272738698,
+          "palmClose": 19,
+          "posteriorContacts": 52,
+          "palmFacing": 0.8781911195509058,
+          "depth": 0.0032273138043188133
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.267724435590065,
+          "wristAreaRatio": 0.8620832250201549,
+          "closest": 0.0017599390414529503,
+          "palmMedian": 0.008138797095305447,
+          "palmClose": 40,
+          "posteriorContacts": 105,
+          "palmFacing": 0.8618027861225114,
+          "depth": 0.0017599390414529503
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "phase": 2,
+      "kneeAngle": 84.35830556080366,
+      "footShortsDistance": 0.28661377867391596,
+      "footLegDistance": 0.39225789915374043,
+      "footThighDistance": 0.24410212195984599,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 18.074221392378544,
+          "wristAreaRatio": 0.8642601902030365,
+          "closest": 0.001673725474732025,
+          "palmMedian": 0.023968814272738698,
+          "palmClose": 19,
+          "posteriorContacts": 52,
+          "palmFacing": 0.8781911195509058,
+          "depth": 0.0032273138043188133
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.267724435590065,
+          "wristAreaRatio": 0.8620832250201549,
+          "closest": 0.0017599390414529503,
+          "palmMedian": 0.008138797095305447,
+          "palmClose": 40,
+          "posteriorContacts": 105,
+          "palmFacing": 0.8618027861225114,
+          "depth": 0.0017599390414529503
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "phase": 2.5,
+      "kneeAngle": 88.33427797882763,
+      "footShortsDistance": 0.3036127654352161,
+      "footLegDistance": 0.41261324090327095,
+      "footThighDistance": 0.2511295568285666,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 18.074221392378544,
+          "wristAreaRatio": 0.8642601902030365,
+          "closest": 0.001673725474732025,
+          "palmMedian": 0.023968814272738698,
+          "palmClose": 19,
+          "posteriorContacts": 52,
+          "palmFacing": 0.8781911195509058,
+          "depth": 0.0032273138043188133
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.267724435590065,
+          "wristAreaRatio": 0.8620832250201549,
+          "closest": 0.0017599390414529503,
+          "palmMedian": 0.008138797095305447,
+          "palmClose": 40,
+          "posteriorContacts": 105,
+          "palmFacing": 0.8618027861225114,
+          "depth": 0.0017599390414529503
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "phase": 3,
+      "kneeAngle": 90.10943353984106,
+      "footShortsDistance": 0.3110974970427837,
+      "footLegDistance": 0.4216892522113468,
+      "footThighDistance": 0.254234090004205,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 18.074221392378544,
+          "wristAreaRatio": 0.8642601902030365,
+          "closest": 0.001673725474732025,
+          "palmMedian": 0.023968814272738698,
+          "palmClose": 19,
+          "posteriorContacts": 52,
+          "palmFacing": 0.8781911195509058,
+          "depth": 0.0032273138043188133
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.267724435590065,
+          "wristAreaRatio": 0.8620832250201549,
+          "closest": 0.0017599390414529503,
+          "palmMedian": 0.008138797095305447,
+          "palmClose": 40,
+          "posteriorContacts": 105,
+          "palmFacing": 0.8618027861225114,
+          "depth": 0.0017599390414529503
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "phase": 3.5,
+      "kneeAngle": 89.20815720607267,
+      "footShortsDistance": 0.307305732505379,
+      "footLegDistance": 0.41708305469472545,
+      "footThighDistance": 0.25265156585520304,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 18.074221392378544,
+          "wristAreaRatio": 0.8642601902030365,
+          "closest": 0.001673725474732025,
+          "palmMedian": 0.023968814272738698,
+          "palmClose": 19,
+          "posteriorContacts": 52,
+          "palmFacing": 0.8781911195509058,
+          "depth": 0.0032273138043188133
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.267724435590065,
+          "wristAreaRatio": 0.8620832250201549,
+          "closest": 0.0017599390414529503,
+          "palmMedian": 0.008138797095305447,
+          "palmClose": 40,
+          "posteriorContacts": 105,
+          "palmFacing": 0.8618027861225114,
+          "depth": 0.0017599390414529503
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "phase": 4,
+      "kneeAngle": 85.87193997648414,
+      "footShortsDistance": 0.2931223396398334,
+      "footLegDistance": 0.40000756757731837,
+      "footThighDistance": 0.24687865274131002,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 18.074221392378544,
+          "wristAreaRatio": 0.8642601902030365,
+          "closest": 0.001673725474732025,
+          "palmMedian": 0.023968814272738698,
+          "palmClose": 19,
+          "posteriorContacts": 52,
+          "palmFacing": 0.8781911195509058,
+          "depth": 0.0032273138043188133
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.267724435590065,
+          "wristAreaRatio": 0.8620832250201549,
+          "closest": 0.0017599390414529503,
+          "palmMedian": 0.008138797095305447,
+          "palmClose": 40,
+          "posteriorContacts": 105,
+          "palmFacing": 0.8618027861225114,
+          "depth": 0.0017599390414529503
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "phase": 4.5,
+      "kneeAngle": 80.99472223125228,
+      "footShortsDistance": 0.2719962125762832,
+      "footLegDistance": 0.3731160802980647,
+      "footThighDistance": 0.2372702982863892,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 18.074221392378544,
+          "wristAreaRatio": 0.8642601902030365,
+          "closest": 0.001673725474732025,
+          "palmMedian": 0.023968814272738698,
+          "palmClose": 19,
+          "posteriorContacts": 52,
+          "palmFacing": 0.8781911195509058,
+          "depth": 0.0032273138043188133
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.267724435590065,
+          "wristAreaRatio": 0.8620832250201549,
+          "closest": 0.0017599390414529503,
+          "palmMedian": 0.008138797095305447,
+          "palmClose": 40,
+          "posteriorContacts": 105,
+          "palmFacing": 0.8618027861225114,
+          "depth": 0.0017599390414529503
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "phase": 5,
+      "kneeAngle": 75.88334155320811,
+      "footShortsDistance": 0.24925074807558342,
+      "footLegDistance": 0.33857591914157503,
+      "footThighDistance": 0.22474982995855758,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 18.074221392378544,
+          "wristAreaRatio": 0.8642601902030365,
+          "closest": 0.001673725474732025,
+          "palmMedian": 0.023968814272738698,
+          "palmClose": 19,
+          "posteriorContacts": 52,
+          "palmFacing": 0.8781911195509058,
+          "depth": 0.0032273138043188133
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.267724435590065,
+          "wristAreaRatio": 0.8620832250201549,
+          "closest": 0.0017599390414529503,
+          "palmMedian": 0.008138797095305447,
+          "palmClose": 40,
+          "posteriorContacts": 105,
+          "palmFacing": 0.8618027861225114,
+          "depth": 0.0017599390414529503
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "phase": 5.5,
+      "kneeAngle": 71.90735705096914,
+      "footShortsDistance": 0.2311919527012689,
+      "footLegDistance": 0.3117547989889994,
+      "footThighDistance": 0.21321256510024478,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 18.074221392378544,
+          "wristAreaRatio": 0.8642601902030365,
+          "closest": 0.001673725474732025,
+          "palmMedian": 0.023968814272738698,
+          "palmClose": 19,
+          "posteriorContacts": 52,
+          "palmFacing": 0.8781911195509058,
+          "depth": 0.0032273138043188133
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.267724435590065,
+          "wristAreaRatio": 0.8620832250201549,
+          "closest": 0.0017599390414529503,
+          "palmMedian": 0.008138797095305447,
+          "palmClose": 40,
+          "posteriorContacts": 105,
+          "palmFacing": 0.8618027861225114,
+          "depth": 0.0017599390414529503
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "phase": 6,
+      "kneeAngle": 70.13238524248267,
+      "footShortsDistance": 0.22307078278982506,
+      "footLegDistance": 0.29994887153078387,
+      "footThighDistance": 0.2075715805549828,
+      "hands": [
+        {
+          "side": "L",
+          "wristDegrees": 18.074221392378544,
+          "wristAreaRatio": 0.8642601902030365,
+          "closest": 0.001673725474732025,
+          "palmMedian": 0.023968814272738698,
+          "palmClose": 19,
+          "posteriorContacts": 52,
+          "palmFacing": 0.8781911195509058,
+          "depth": 0.0032273138043188133
+        },
+        {
+          "side": "R",
+          "wristDegrees": 16.267724435590065,
+          "wristAreaRatio": 0.8620832250201549,
+          "closest": 0.0017599390414529503,
+          "palmMedian": 0.008138797095305447,
+          "palmClose": 40,
+          "posteriorContacts": 105,
+          "palmFacing": 0.8618027861225114,
+          "depth": 0.0017599390414529503
+        }
+      ]
+    }
+  ],
+  "errors": []
+}
